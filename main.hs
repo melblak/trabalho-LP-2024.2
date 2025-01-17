@@ -48,16 +48,14 @@ resultados (x:xs) (y:ys)
 
 -- Função principal
 main = do
+
     -- Entrada dos arquivos
     arq1 <- lerLinhas "arquivo1.txt"
     arq2 <- lerLinhas "arquivo2.txt"
 
 
-    print arq1
-    print arq2
-
+    -- Compara as linhas dos arquivos
     let nlinhas = compLinhas arq1 arq2
-    print nlinhas
 
 
     -- Criação da lista de denominadores
@@ -66,4 +64,4 @@ main = do
 
     -- Saída
     let saida = resultados nlinhas denominadores
-    print saida
+    mapM_ print saida
