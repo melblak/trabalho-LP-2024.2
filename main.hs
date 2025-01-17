@@ -24,6 +24,16 @@ compLinhas (x:xs) (y:ys) =
     in resultado : compLinhas xs ys -- Recursivamente compara o resto das strings e adiciona na lista
 compLinhas _ _ = [] -- Se uma lista acabar retorna uma lista vazia
 
+-- Lista acumulada de denominadores
+acumularDenominadores :: [Int] -> [Int]
+acumularDenominadores xs = acumular xs 0 -- Chama a função acumular com o acumulador inicial 0
+  where
+    acumular [] _ = [] -- Caso base: lista vazia
+    acumular (x:xs) acc -- 
+        | x > 0     = (acc + 1) : acumular xs (acc + 1)
+        | otherwise = acc : acumular xs acc
+
+
 
 -- Função principal
 main = do
@@ -37,3 +47,9 @@ main = do
 
     let nlinhas = compLinhas arq1 arq2
     print nlinhas
+
+
+    -- Criação da lista de denominadores
+    let denominadores = acumularDenominadores nlinhas
+    -- Imprimir a lista 
+    print denominadores
