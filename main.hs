@@ -29,9 +29,9 @@ acumularDenominadores :: [Int] -> [Int]
 acumularDenominadores xs = acumular xs 0 -- Chama a função acumular com o acumulador inicial 0
   where
     acumular [] _ = [] -- Caso base: lista vazia
-    acumular (x:xs) acc -- 
-        | x > 0     = (acc + 1) : acumular xs (acc + 1)
-        | otherwise = acc : acumular xs acc
+    acumular (x:xs) acc -- Separa o primeiro elemento da lista 
+        | x > 0     = (acc + 1) : acumular xs (acc + 1) -- Se o elemento for maior que 0, soma 1 ao acumulador e faz chamada recursiva
+        | otherwise = acc : acumular xs acc -- Se o elemento for 0, faz chamada recursiva
 
 
 
