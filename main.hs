@@ -1,9 +1,9 @@
+import GHC.Exts.Heap (GenClosure(FloatClosure))
 -- Função que le linhas de um arquivo
 lerLinhas :: String -> IO [String] -- Entra uma o caminho do arquivo e retorna uma lista de strings
 lerLinhas arquivo = do
     conteudo <- readFile arquivo -- Lê o conteúdo do arquivo
     pure (lines conteudo) -- Encapsula o resultado em um IO
-
 
 
 -- Função que compara dois Strings
@@ -33,6 +33,15 @@ acumularDenominadores xs = acumular xs 0 -- Chama a função acumular com o acum
         | x > 0     = (acc + 1) : acumular xs (acc + 1) -- Se o elemento for maior que 0, soma 1 ao acumulador e faz chamada recursiva
         | otherwise = acc : acumular xs acc -- Se o elemento for 0, faz chamada recursiva
 
+
+
+-- Função de saída
+resultados :: [Int] -> [Int] -> String
+resultados [] [] = ""
+resultados (x:xs) (y:ys)
+    | x == 0 = "0\n" ++ resultados xs ys
+    | otherwise = show (media x y) ++ "\n" ++ resultados xs ys
+    where media a b = fromIntegral a / fromIntegral b
 
 
 -- Função principal
