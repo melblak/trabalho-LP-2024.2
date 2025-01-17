@@ -1,4 +1,3 @@
-import GHC.Exts.Heap (GenClosure(FloatClosure))
 -- Função que le linhas de um arquivo
 lerLinhas :: String -> IO [String] -- Entra uma o caminho do arquivo e retorna uma lista de strings
 lerLinhas arquivo = do
@@ -23,6 +22,7 @@ compLinhas (x:xs) (y:ys) =
     let resultado = compString x y -- Compara as duas strings
     in resultado : compLinhas xs ys -- Recursivamente compara o resto das strings e adiciona na lista
 compLinhas _ _ = [] -- Se uma lista acabar retorna uma lista vazia
+
 
 -- Lista acumulada de denominadores
 acumularDenominadores :: [Int] -> [Int]
@@ -60,5 +60,8 @@ main = do
 
     -- Criação da lista de denominadores
     let denominadores = acumularDenominadores nlinhas
-    -- Imprimir a lista 
-    print denominadores
+
+
+    -- Saída
+    let saida = resultados nlinhas denominadores
+    print saida
