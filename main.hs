@@ -7,46 +7,52 @@ lerLinhas arquivo = do
 
 -- Função que calcula a distância de Levenshtein entre duas strings
 levenshtein :: String -> String -> Int
-levenshtein xs ys = levMemo (length xs) (length ys)  -- Chama a função auxiliar com os comprimentos das strings
+levenshtein xs ys = memoria (length xs) (length ys)  -- Chama a função auxiliar com os comprimentos das strings
   where
-    levMemo i j = table !! i !! j  -- Acessa o valor na posição (i, j) da tabela de distâncias
+    memoria i j = matriz !! i !! j  -- Acessa o valor na posição (i, j) da tabela de distâncias
     
-    table = [[levCell i j | j <- [0..length ys]] | i <- [0..length xs]] -- Cria uma tabela bidimensional onde cada célula calcula a distância de edição até aquela posição
+    matriz = [[celula i j | j <- [0..length ys]] | i <- [0..length xs]] -- Cria uma tabela bidimensional onde cada célula calcula a distância de edição até aquela posição
 
-    levCell 0 j = j -- Caso base: se a primeira string for vazia, a distância é o tamanho da segunda string
+    celula 0 j = j -- Caso base: se a primeira string for vazia, a distância é o tamanho da segunda string
 
-    levCell i 0 = i -- Caso base: se a segunda string for vazia, a distância é o tamanho da primeira string
+    celula i 0 = i -- Caso base: se a segunda string for vazia, a distância é o tamanho da primeira string
 
-    levCell i j -- Caso geral: compara os últimos caracteres das substrings atuais
-      | xs !! (i - 1) == ys !! (j - 1) = table !! (i - 1) !! (j - 1)  -- Se forem iguais, usa o valor da célula anterior
-      | otherwise = 1 + minimum [table !! (i - 1) !! j,    -- Se forem diferentes, calcula a menor distância com:
-                                 table !! i !! (j - 1),    -- Deleção
-                                 table !! (i - 1) !! (j - 1)]  -- Inserção
-
-
-
--- -- Função que compara dois Strings
--- compString :: String -> String -> Int
--- compString [] [] = 0  -- As duas strings estão vazias
--- compString (x:xs) (y:ys)  -- Separa o primeiro caractere da string
---     | x == y    = compString xs ys  -- Se caracteres forem iguais, continua com o resto da string
---     | otherwise = 1 + compString xs ys  -- Se caracteres forem diferentes, soma 1 e continua
--- compString [] ys = length ys -- Se a primeira string acabar e a segunda ainda tiver caracteres
--- compString xs [] = length xs -- Se a segunda string acabar e a primeira ainda tiver caracteres
+    celula i j -- Caso geral: compara os últimos caracteres das substrings atuais
+      | xs !! (i - 1) == ys !! (j - 1) = matriz !! (i - 1) !! (j - 1)  -- Se forem iguais, usa o valor da célula anterior
+      | otherwise = 1 + minimum [matriz !! (i - 1) !! j,    -- Se forem diferentes, calcula a menor distância com:
+                                 matriz !! i !! (j - 1),    -- Deleção
+                                 matriz !! (i - 1) !! (j - 1)]  -- Inserção
 
 
--- Função que compara as linhas
-compLinhas :: [String] -> [String] -> [Int]
-compLinhas [] [] = [] -- As duas listas estão vazias
-compLinhas (x:xs) (y:ys) =
-    let resultado = levenshtein x y -- Compara as duas strings
-    in resultado : compLinhas xs ys -- Recursivamente compara o resto das strings e adiciona na lista
-compLinhas _ _ = [] -- Se uma lista acabar retorna uma lista vazia
+compLinhas :: [String] -> [String] -> [(Int, String)]
+compLinhas [] [] = []  -- Caso base: ambas listas vazias
+compLinhas xs [] = map (\x -> (length x, "Delecao")) xs  -- Linhas restantes de `xs` são deleções
+compLinhas [] ys = map (\y -> (length y, "Insercao")) ys  -- Linhas restantes de `ys` são inserções
+compLinhas (x:xs) (y:ys)
+    | x == y = (0, "Igual") : compLinhas xs ys  -- Linhas iguais
+    | otherwise =
+        let distAtual = levenshtein x y  -- Calcula a distância de edição entre as linhas atuais
+            proximoXs = if null xs then maxBound else levenshtein (head xs) y  -- Distância da próxima linha de `xs` com a linha atual de `ys`
+            proximoYs = if null ys then maxBound else levenshtein x (head ys)  -- Distância da linha atual de `xs` com a próxima linha de `ys`
+        in if distAtual <= proximoXs && distAtual <= proximoYs
+           then (distAtual, "Alteracao") : compLinhas xs ys  -- Alteração na linha atual
+           else if proximoXs < proximoYs
+           then (length x, "Delecao") : compLinhas xs (y:ys)  -- Linha de `xs` deletada
+           else (length y, "Insercao") : compLinhas (x:xs) ys  -- Linha de `ys` inserida
+
 
 
 -- Lista acumulada de erros
 acumular :: [Int] -> [Int]
 acumular = scanl (+) 0
+
+-- Função que extrai os primeiros elementos das tuplas
+extrairPrimeiros :: [(Int, String)] -> [Int]
+extrairPrimeiros = map fst
+
+-- Função que extrai os segundos elementos das tuplas
+extrairSegundos :: [(Int, String)] -> [String]
+extrairSegundos = map snd
 
 
 -- Função de saída que retorna uma lista de floats
@@ -73,15 +79,18 @@ main = do
 
     -- Compara as linhas dos arquivos
     let nlinhas = compLinhas arq1 arq2
+    let distancias = extrairPrimeiros nlinhas
+    let mudancas = extrairSegundos nlinhas
     print nlinhas
+    print mudancas
 
 
     -- Criação da lista acumulada
-    let listaAcumulada = acumular nlinhas
+    let listaAcumulada = acumular distancias
     let totalErros = drop 1 listaAcumulada
     print totalErros
 
 
     -- Saída
-    let saida = resultados nlinhas totalErros
+    let saida = resultados distancias totalErros
     mapM_ print saida
