@@ -5,6 +5,7 @@ lerLinhas arquivo = do
     pure (lines conteudo) -- Encapsula o resultado em um IO
 
 
+
 -- Função que compara dois Strings
 compString :: String -> String -> Int
 compString [] [] = 0  -- As duas strings estão vazias
@@ -24,15 +25,9 @@ compLinhas (x:xs) (y:ys) =
 compLinhas _ _ = [] -- Se uma lista acabar retorna uma lista vazia
 
 
--- Lista acumulada de denominadores
-acumularDenominadores :: [Int] -> [Int]
-acumularDenominadores xs = acumular xs 0 -- Chama a função acumular com o acumulador inicial 0
-  where
-    acumular [] _ = [] -- Caso base: lista vazia
-    acumular (x:xs) acc -- Separa o primeiro elemento da lista 
-        | x > 0     = (acc + 1) : acumular xs (acc + 1) -- Se o elemento for maior que 0, soma 1 ao acumulador e faz chamada recursiva
-        | otherwise = acc : acumular xs acc -- Se o elemento for 0, faz chamada recursiva
-
+-- Lista acumulada de erros
+acumular :: [Int] -> [Int]
+acumular = scanl (+) 0
 
 
 -- Função de saída que retorna uma lista de floats
@@ -53,15 +48,21 @@ main = do
     arq1 <- lerLinhas "arquivo1.txt"
     arq2 <- lerLinhas "arquivo2.txt"
 
+    print arq1
+    print arq2
+
 
     -- Compara as linhas dos arquivos
     let nlinhas = compLinhas arq1 arq2
+    print nlinhas
 
 
-    -- Criação da lista de denominadores
-    let denominadores = acumularDenominadores nlinhas
+    -- Criação da lista acumulada
+    let listaAcumulada = acumular nlinhas
+    let totalErros = drop 1 listaAcumulada
+    print totalErros
 
 
     -- Saída
-    let saida = resultados nlinhas denominadores
+    let saida = resultados nlinhas totalErros
     mapM_ print saida
