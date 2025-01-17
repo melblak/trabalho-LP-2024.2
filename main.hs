@@ -17,13 +17,12 @@ compString [] _ = 1 -- Se a segunda string acabar e a primeira ainda tiver carac
 
 
 -- Função que compara as linhas
-compLinhas :: [String] -> [String] -> Int
-compLinhas [] [] = 0 -- As duas listas estão vazias
-compLinhas (x:xs) (y:ys) = do
+compLinhas :: [String] -> [String] -> [Int]
+compLinhas [] [] = [] -- As duas listas estão vazias
+compLinhas (x:xs) (y:ys) =
     let resultado = compString x y -- Compara as duas strings
-    let somatorio = []
-    somatorio ++ resultado
-    compLinhas xs ys -- Continua com o resto das listas
+    in resultado : compLinhas xs ys -- Recursivamente compara o resto das strings e adiciona na lista
+compLinhas _ _ = [] -- Se uma lista acabar retorna uma lista vazia
 
 
 -- Função principal
