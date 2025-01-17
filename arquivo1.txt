@@ -1,8 +1,4 @@
-rato
-roeu
-a
-roupa
-do
-rei
-de
-roma
+o rato roeu
+a roupa
+do rei
+de roma
