@@ -26,12 +26,12 @@ compLinhas _ _ = [] -- Se uma lista acabar retorna uma lista vazia
 
 
 -- Função de saída
-resultados :: [Int] -> [Int] -> Float
-resultados [] [] = 0
+resultados :: [Int] -> [Int] -> String
+resultados [] [] = ""
 resultados (x:xs) (y:ys)
-    | x /= 0 = resultados xs ys
-    | otherwise = media x y
-    where media a b = fromIntegral (a) / fromIntegral b
+    | x == 0 = "0\n" ++ resultados xs ys
+    | otherwise = show (media x y) ++ "\n" ++ resultados xs ys
+    where media a b = fromIntegral a / fromIntegral b
 
 
 -- Função principal
