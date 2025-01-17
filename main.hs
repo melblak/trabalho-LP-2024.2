@@ -10,13 +10,9 @@ levenshtein :: String -> String -> Int
 levenshtein xs ys = memoria (length xs) (length ys)  -- Chama a função auxiliar com os comprimentos das strings
   where
     memoria i j = matriz !! i !! j  -- Acessa o valor na posição (i, j) da tabela de distâncias
-    
     matriz = [[celula i j | j <- [0..length ys]] | i <- [0..length xs]] -- Cria uma tabela bidimensional onde cada célula calcula a distância de edição até aquela posição
-
     celula 0 j = j -- Caso base: se a primeira string for vazia, a distância é o tamanho da segunda string
-
     celula i 0 = i -- Caso base: se a segunda string for vazia, a distância é o tamanho da primeira string
-
     celula i j -- Caso geral: compara os últimos caracteres das substrings atuais
       | xs !! (i - 1) == ys !! (j - 1) = matriz !! (i - 1) !! (j - 1)  -- Se forem iguais, usa o valor da célula anterior
       | otherwise = 1 + minimum [matriz !! (i - 1) !! j,    -- Se forem diferentes, calcula a menor distância com:
