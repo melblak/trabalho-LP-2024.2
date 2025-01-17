@@ -35,13 +35,15 @@ acumularDenominadores xs = acumular xs 0 -- Chama a função acumular com o acum
 
 
 
--- Função de saída
-resultados :: [Int] -> [Int] -> String
-resultados [] [] = ""
+-- Função de saída que retorna uma lista de floats
+resultados :: [Int] -> [Int] -> [Float]
+resultados [] [] = []
 resultados (x:xs) (y:ys)
-    | x == 0 = "0\n" ++ resultados xs ys
-    | otherwise = show (media x y) ++ "\n" ++ resultados xs ys
-    where media a b = fromIntegral a / fromIntegral b
+    | x == 0    = 0.0 : resultados xs ys  -- Se x for 0, adiciona 0.0 na lista
+    | otherwise = media x y : resultados xs ys  -- Caso contrário, calcula a média e adiciona na lista
+  where
+    media a b = fromIntegral a / fromIntegral b  -- Converte os valores para Float e calcula a média
+
 
 
 -- Função principal
