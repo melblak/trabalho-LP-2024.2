@@ -2,17 +2,17 @@
 arquivo = main.hs
 target = main
 
-# Regra padrão: compilar o projeto
+# Compila o projeto
 all: $(target)
 
 $(target): $(arquivo)
 	ghc -o $(target) $(arquivo)
 
-# Regra para limpar os arquivos gerados
+# Limpa os arquivos gerados
 clean:
 	rm -f $(target) *.hi *.o
 
-# Regra para executar o programa
+# Executa o programa
 run: $(target)
 	./$(target)
 
