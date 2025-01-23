@@ -69,22 +69,17 @@ main = do
     arq1 <- lerLinhas "arquivo1.txt"
     arq2 <- lerLinhas "arquivo2.txt"
 
-    print arq1
-    print arq2
-
 
     -- Compara as linhas dos arquivos
     let nlinhas = compLinhas arq1 arq2
     let distancias = extrairPrimeiros nlinhas
     let mudancas = extrairSegundos nlinhas
     print nlinhas
-    print mudancas
 
 
     -- Criação da lista acumulada
     let listaAcumulada = acumular distancias
     let totalErros = drop 1 listaAcumulada
-    print totalErros
 
 
     -- Saída
