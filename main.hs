@@ -33,8 +33,8 @@ compLinhas (x:xs) (y:ys)
         in if distAtual <= proximoXs && distAtual <= proximoYs
            then (distAtual, "Alteracao") : compLinhas xs ys  -- Alteração na linha atual
            else if proximoXs < proximoYs
-           then (length x, "Delecao") : compLinhas xs (y:ys)  -- Linha de `xs` deletada
-           else (length y, "Insercao") : compLinhas (x:xs) ys  -- Linha de `ys` inserida
+           then (0, "Delecao") : compLinhas xs (y:ys)  -- Linha de `xs` deletada e alterações não contadas
+           else (0, "Insercao") : compLinhas (x:xs) ys  -- Linha de `ys` inserida e alterações não contadas
 
 
 
@@ -74,14 +74,16 @@ main = do
     let nlinhas = compLinhas arq1 arq2
     let distancias = extrairPrimeiros nlinhas
     let mudancas = extrairSegundos nlinhas
-    print nlinhas
+    print "As mudancas em cada linha foram:"
+    mapM_ print mudancas
 
 
     -- Criação da lista acumulada
     let listaAcumulada = acumular distancias
-    let totalErros = drop 1 listaAcumulada
+    let totalErros = drop 1 listaAcumulada -- Remove o primeiro elemento da lista acumulada
 
 
     -- Saída
     let saida = resultados distancias totalErros
-    mapM_ print saida
+    print "As medias das alteracoes em cada linha foram:"
+    mapM_ print saida -- Aplica função print em cada elemento da lista saida
